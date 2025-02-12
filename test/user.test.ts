@@ -54,6 +54,28 @@ describe("POST /api/users/login", () => {
     expect(response.body.errors).toBeDefined();
   });
 
+  it("should reject login if username is wrong", async () => {
+    const response = await supertest(app).post("/api/users/login").send({
+      username: "123",
+      password: "test",
+    });
+
+    logger.debug(response.body);
+    expect(response.status).toBe(401);
+    expect(response.body.errors).toBeDefined();
+  });
+
+  it("should reject login if password is wrong", async () => {
+    const response = await supertest(app).post("/api/users/login").send({
+      username: "test",
+      password: "123",
+    });
+
+    logger.debug(response.body);
+    expect(response.status).toBe(401);
+    expect(response.body.errors).toBeDefined();
+  });
+
   it("should return token", async () => {
     const response = await supertest(app).post("/api/users/login").send({
       username: "test",
