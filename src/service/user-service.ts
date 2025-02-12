@@ -1,13 +1,15 @@
 import { prismaClient } from "../application/database";
 import { ResponseError } from "../error/response-error";
+import { comparePass, hashPass } from "../helpers/bcrypt";
 import {
   CreateUserRequest,
+  LoginRequest,
   toUserResponse,
   UserResponse,
 } from "../model/user-model";
 import { UserValidation } from "../validation/user-validation";
 import { Validation } from "../validation/validation";
-import bcrypt from "bcrypt";
+import { v4 as uuid } from "uuid";
 
 export class UserService {
   static async register(request: CreateUserRequest): Promise<UserResponse> {
@@ -26,12 +28,50 @@ export class UserService {
       throw new ResponseError(400, "Username already exists");
     }
 
-    registerRequest.password = await bcrypt.hash(registerRequest.password, 10);
+    registerRequest.password = await hashPass(registerRequest.password);
 
     const user = await prismaClient.user.create({
       data: registerRequest,
     });
 
     return toUserResponse(user);
+  }
+
+  static async login(request: LoginRequest): Promise<UserResponse> {
+    const LoginRequest = Validation.validate(UserValidation.LOGIN, request);
+
+    let user = await prismaClient.user.findUnique({
+      where: {
+        username: LoginRequest.username,
+      },
+    });
+
+    if (!user) {
+      throw new ResponseError(401, "Username/password is incorrect");
+    }
+
+    const validatePassword = await comparePass(
+      LoginRequest.password,
+      user.password
+    );
+
+    if (!validatePassword) {
+      throw new ResponseError(401, "Username/password is incorrect");
+    }
+
+    user = await prismaClient.user.update({
+      where: {
+        username: LoginRequest.username,
+      },
+      data: {
+        token: uuid(),
+      },
+    });
+
+    const response = toUserResponse(user);
+
+    response.token = user.token!;
+
+    return response;
   }
 }

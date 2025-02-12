@@ -18,3 +18,8 @@ export function toUserResponse(user: User): UserResponse {
     username: user.username,
   };
 }
+
+export type LoginRequest = {
+  username: string;
+  password: string;
+};
