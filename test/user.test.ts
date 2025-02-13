@@ -89,3 +89,34 @@ describe("POST /api/users/login", () => {
     expect(response.body.data.token).toBeDefined();
   });
 });
+
+describe("GET /api/users/current", () => {
+  beforeEach(async () => {
+    await UserTest.create();
+  });
+
+  afterEach(async () => {
+    await UserTest.delete();
+  });
+
+  it("should be able to get user", async () => {
+    const res = await supertest(app)
+      .get("/api/users/current")
+      .set("X-API-TOKEN", "test");
+
+    logger.debug(res.body);
+    expect(res.status).toBe(200);
+    expect(res.body.data.username).toBe("test");
+    expect(res.body.data.name).toBe("test");
+  });
+
+  it("should reject get User if token invalid", async () => {
+    const res = await supertest(app)
+      .get("/api/users/current")
+      .set("X-API-TOKEN", "123");
+
+    logger.debug(res.body);
+    expect(res.status).toBe(401);
+    expect(res.body.errors).toBeDefined();
+  });
+});
