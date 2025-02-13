@@ -88,11 +88,11 @@ export class UserService {
     const updateRequest = Validation.validate(UserValidation.UPDATE, request);
 
     if (updateRequest.name) {
-      updateRequest.name = updateRequest.name;
+      user.name = updateRequest.name;
     }
 
     if (updateRequest.password) {
-      updateRequest.password = await hashPass(updateRequest.password);
+      user.password = await hashPass(updateRequest.password);
     }
 
     const updatedUser = await prismaClient.user.update({

@@ -120,3 +120,54 @@ describe("GET /api/users/current", () => {
     expect(res.body.errors).toBeDefined();
   });
 });
+
+describe("PATCH /api/users/current", () => {
+  beforeEach(async () => {
+    await UserTest.create();
+  });
+
+  afterEach(async () => {
+    await UserTest.delete();
+  });
+
+  it("should reject if request is invalid", async () => {
+    const res = await supertest(app)
+      .patch("/api/users/current")
+      .set("X-API-TOKEN", "test")
+      .send({
+        name: "",
+        password: "",
+      });
+
+    logger.debug(res.body);
+    expect(res.status).toBe(400);
+    expect(res.body.errors).toBeDefined();
+  });
+
+  it("should reject if token is invalid", async () => {
+    const res = await supertest(app)
+      .patch("/api/users/current")
+      .set("X-API-TOKEN", "123")
+      .send({
+        name: "test2",
+        password: "test2",
+      });
+
+    logger.debug(res.body);
+    expect(res.status).toBe(401);
+    expect(res.body.errors).toBeDefined();
+  });
+
+  it("should be able to update user name", async () => {
+    const res = await supertest(app)
+      .patch("/api/users/current")
+      .set("X-API-TOKEN", "test")
+      .send({
+        name: "test2",
+      });
+
+    logger.debug(res.body);
+    expect(res.status).toBe(200);
+    expect(res.body.data.name).toBe("test2");
+  });
+});
