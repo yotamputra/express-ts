@@ -23,3 +23,8 @@ export type LoginRequest = {
   username: string;
   password: string;
 };
+
+export type UpdateUserRequest = {
+  name?: string;
+  password?: string;
+};
