@@ -1,3 +1,4 @@
+import { User } from "@prisma/client";
 import { prismaClient } from "../application/database";
 import { ResponseError } from "../error/response-error";
 import { comparePass, hashPass } from "../helpers/bcrypt";
@@ -73,5 +74,9 @@ export class UserService {
     response.token = user.token!;
 
     return response;
+  }
+
+  static async getUser(user: User): Promise<UserResponse> {
+    return toUserResponse(user);
   }
 }

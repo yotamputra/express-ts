@@ -82,8 +82,6 @@ describe("POST /api/users/login", () => {
       password: "test",
     });
 
-    console.log(response.body, "<----");
-
     logger.debug(response.body);
     expect(response.status).toBe(200);
     expect(response.body.data.username).toBe("test");
