@@ -8,3 +8,4 @@ apiRouter.use(auth);
 
 apiRouter.get("/api/users/current", UserController.getUser);
 apiRouter.patch("/api/users/current", UserController.update);
+apiRouter.delete("api/users/current", UserController.logout)
