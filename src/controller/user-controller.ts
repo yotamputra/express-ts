@@ -5,7 +5,6 @@ import {
   UpdateUserRequest,
 } from "../model/user-model";
 import { UserService } from "../service/user-service";
-import { User } from "@prisma/client";
 import { UserRequest } from "../type/user-request";
 
 export class UserController {
@@ -61,10 +60,10 @@ export class UserController {
 
   static async logout(req: UserRequest, res: Response, next: NextFunction) {
     try {
-      const response = await UserService.logout(req.user!);
+      await UserService.logout(req.user!);
 
       res.status(200).json({
-        data: response,
+        data: "OK",
       });
     } catch (err) {
       next(err);

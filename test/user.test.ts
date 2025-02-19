@@ -188,3 +188,36 @@ describe("PATCH /api/users/current", () => {
     expect(await comparePass("test2", user.password)).toBe(true);
   });
 });
+
+describe("DELETE /api/users/current", () => {
+  beforeEach(async () => {
+    await UserTest.create();
+  });
+
+  afterEach(async () => {
+    await UserTest.delete();
+  });
+
+  it("should delete user token", async () => {
+    const res = await supertest(app)
+      .delete("/api/users/current")
+      .set("X-API-TOKEN", "test");
+
+    logger.debug(res.body);
+    expect(res.status).toBe(200);
+    expect(res.body.data).toBe("OK");
+
+    const user = await UserTest.get();
+    expect(user.token).toBeNull();
+  });
+
+  it("should reject logout if token is wrong", async () => {
+    const res = await supertest(app)
+      .delete("/api/users/current")
+      .set("X-API-TOKEN", "123");
+
+    logger.debug(res.body);
+    expect(res.status).toBe(401);
+    expect(res.body.errors).toBeDefined();
+  });
+});

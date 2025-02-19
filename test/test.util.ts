@@ -16,7 +16,7 @@ export class UserTest {
       data: {
         username: "test",
         name: "test",
-        password: hashPass("test"),
+        password: await hashPass("test"),
         token: "test",
       },
     });
