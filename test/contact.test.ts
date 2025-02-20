@@ -75,4 +75,15 @@ describe("GET /api/contacts/:contactId", () => {
     expect(res.body.data.email).toBe(contact.email);
     expect(res.body.data.phone).toBe(contact.phone);
   });
+
+  it("should reject get a contact if contact is not found", async () => {
+    const contact = await ContactTest.get();
+    const res = await supertest(app)
+      .get(`/api/contacts/${contact.id + 1}`)
+      .set("X-API-TOKEN", "test");
+
+    logger.debug(res.body);
+    expect(res.status).toBe(404);
+    expect(res.body.errors).toBeDefined();
+  });
 });
