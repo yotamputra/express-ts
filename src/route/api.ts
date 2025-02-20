@@ -15,3 +15,4 @@ apiRouter.delete("/api/users/current", UserController.logout);
 //Contact
 apiRouter.post("/api/contacts", ContactController.create);
 apiRouter.get("/api/contacts/:contactId(\\d+)", ContactController.get); // Regex for number
+apiRouter.put("/api/contacts/:contactId(\\d+)", ContactController.update);
