@@ -77,3 +77,35 @@ describe("POST /api/contacts/:contactId/addresses", () => {
     expect(res.body.errors).toBeDefined();
   });
 });
+
+describe("GET /api/contacts/:contactId/addresses/:addressId", () => {
+  beforeEach(async () => {
+    await UserTest.create();
+    await ContactTest.create();
+    await AddressTest.create();
+  });
+
+  afterEach(async () => {
+    await AddressTest.deleteAll();
+    await ContactTest.deleteAll();
+    await UserTest.delete();
+  });
+
+  it("should get address", async () => {
+    const contact = await ContactTest.get();
+    const address = await AddressTest.get();
+
+    const res = await supertest(app)
+      .get(`/api/contacts/${contact.id}/addresses/${address.id}`)
+      .set("X-API-TOKEN", "test");
+
+    logger.debug(res.body);
+    expect(res.status).toBe(200);
+    expect(res.body.data.id).toBe(address.id);
+    expect(res.body.data.street).toBe(address.street);
+    expect(res.body.data.city).toBe(address.city);
+    expect(res.body.data.province).toBe(address.province);
+    expect(res.body.data.country).toBe(address.country);
+    expect(res.body.data.postal_code).toBe(address.postal_code);
+  });
+});
