@@ -121,4 +121,17 @@ describe("GET /api/contacts/:contactId/addresses/:addressId", () => {
     expect(res.status).toBe(404);
     expect(res.body.errors).toBeDefined();
   });
+
+  it("should reject get address if contact is not found", async () => {
+    const contact = await ContactTest.get();
+    const address = await AddressTest.get();
+
+    const res = await supertest(app)
+      .get(`/api/contacts/${contact.id + 1}/addresses/${address.id}`)
+      .set("X-API-TOKEN", "test");
+
+    logger.debug(res.body);
+    expect(res.status).toBe(404);
+    expect(res.body.errors).toBeDefined();
+  });
 });
