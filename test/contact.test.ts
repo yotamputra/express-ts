@@ -251,4 +251,21 @@ describe("GET /api/contacts", () => {
     expect(res.body.paging.total_page).toBe(0);
     expect(res.body.paging.size).toBe(10);
   });
+
+  it("should able to search contacts with paging", async () => {
+    const res = await supertest(app)
+      .get(`/api/contacts`)
+      .query({
+        page: 2,
+        size: 1,
+      })
+      .set("X-API-TOKEN", "test");
+
+    logger.debug(res.body);
+    expect(res.status).toBe(200);
+    expect(res.body.data.length).toBe(0);
+    expect(res.body.paging.current_page).toBe(2);
+    expect(res.body.paging.total_page).toBe(1);
+    expect(res.body.paging.size).toBe(1);
+  });
 });
