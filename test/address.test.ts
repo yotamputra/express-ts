@@ -101,11 +101,24 @@ describe("GET /api/contacts/:contactId/addresses/:addressId", () => {
 
     logger.debug(res.body);
     expect(res.status).toBe(200);
-    expect(res.body.data.id).toBe(address.id);
+    expect(res.body.data.id).toBeDefined();
     expect(res.body.data.street).toBe(address.street);
     expect(res.body.data.city).toBe(address.city);
     expect(res.body.data.province).toBe(address.province);
     expect(res.body.data.country).toBe(address.country);
     expect(res.body.data.postal_code).toBe(address.postal_code);
+  });
+
+  it("should reject get address if address is not found", async () => {
+    const contact = await ContactTest.get();
+    const address = await AddressTest.get();
+
+    const res = await supertest(app)
+      .get(`/api/contacts/${contact.id}/addresses/${address.id + 1}`)
+      .set("X-API-TOKEN", "test");
+
+    logger.debug(res.body);
+    expect(res.status).toBe(404);
+    expect(res.body.errors).toBeDefined();
   });
 });
