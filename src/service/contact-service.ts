@@ -61,7 +61,10 @@ export class ContactService {
     user: User,
     request: UpdateContactRequest
   ): Promise<ContactResponse> {
-    const updateRequest = Validation.validate(ContactValidation.UPDATE, request);
+    const updateRequest = Validation.validate(
+      ContactValidation.UPDATE,
+      request
+    );
 
     await this.checkContactExists(user.username, updateRequest.id);
 
@@ -71,6 +74,19 @@ export class ContactService {
         username: user.username,
       },
       data: updateRequest,
+    });
+
+    return toContactResponse(contact);
+  }
+
+  static async remove(user: User, id: number): Promise<ContactResponse> {
+    await this.checkContactExists(user.username, id);
+
+    const contact = await prismaClient.contact.delete({
+      where: {
+        id: id,
+        username: user.username,
+      },
     });
 
     return toContactResponse(contact);
