@@ -33,3 +33,13 @@ export type GetAddressRequest = {
   contact_id: number;
   id: number;
 };
+
+export type UpdateAddressRequest = {
+  id: number;
+  contact_id: number;
+  street?: string;
+  city?: string;
+  province?: string;
+  country: string;
+  postal_code: string;
+};
