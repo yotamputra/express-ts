@@ -193,4 +193,44 @@ describe("PUT /api/contacts/:contactId/addresses/:addressId", () => {
     expect(res.status).toBe(400);
     expect(res.body.errors).toBeDefined()
   })
+
+  it("should reject update address if address not found", async () => {
+    const contact = await ContactTest.get();
+    const address = await AddressTest.get();
+
+    const res = await supertest(app)
+      .put(`/api/contacts/${contact.id}/addresses/${address.id + 1}`)
+      .set("X-API-TOKEN", "test")
+      .send({
+        street: "test",
+        city: "test",
+        province: "test",
+        country: "test",
+        postal_code: "12345",
+      });
+
+    logger.debug(res.body);
+    expect(res.status).toBe(404);
+    expect(res.body.errors).toBeDefined()
+  })
+
+  it("should reject update address if contact not found", async () => {
+    const contact = await ContactTest.get();
+    const address = await AddressTest.get();
+
+    const res = await supertest(app)
+      .put(`/api/contacts/${contact.id + 1}/addresses/${address.id}`)
+      .set("X-API-TOKEN", "test")
+      .send({
+        street: "test",
+        city: "test",
+        province: "test",
+        country: "test",
+        postal_code: "12345",
+      });
+
+    logger.debug(res.body);
+    expect(res.status).toBe(404);
+    expect(res.body.errors).toBeDefined()
+  })
 });
