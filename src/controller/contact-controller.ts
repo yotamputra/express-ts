@@ -39,7 +39,7 @@ export class ContactController {
       request.id = Number(req.params.contactId);
       const response = await ContactService.update(req.user!, request);
 
-      res.status(201).json({
+      res.status(200).json({
         data: response,
       });
     } catch (err) {

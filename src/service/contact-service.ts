@@ -37,7 +37,7 @@ export class ContactService {
     username: string,
     contactId: number
   ): Promise<Contact> {
-    const contact = await prismaClient.contact.findUnique({
+    const contact = await prismaClient.contact.findFirst({
       where: {
         id: contactId,
         username: username,
@@ -61,7 +61,7 @@ export class ContactService {
     user: User,
     request: UpdateContactRequest
   ): Promise<ContactResponse> {
-    const updateRequest = Validation.validate(UserValidation.UPDATE, request);
+    const updateRequest = Validation.validate(ContactValidation.UPDATE, request);
 
     await this.checkContactExists(user.username, updateRequest.id);
 
