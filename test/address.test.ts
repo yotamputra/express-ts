@@ -173,4 +173,24 @@ describe("PUT /api/contacts/:contactId/addresses/:addressId", () => {
     expect(res.body.data.country).toBe("test");
     expect(res.body.data.postal_code).toBe("12345");
   })
+
+  it("should reject update address if data req is inavlid", async () => {
+    const contact = await ContactTest.get();
+    const address = await AddressTest.get();
+
+    const res = await supertest(app)
+      .put(`/api/contacts/${contact.id}/addresses/${address.id}`)
+      .set("X-API-TOKEN", "test")
+      .send({
+        street: "test",
+        city: "test",
+        province: "test",
+        country: "test",
+        postal_code: "",
+      });
+
+    logger.debug(res.body);
+    expect(res.status).toBe(400);
+    expect(res.body.errors).toBeDefined()
+  })
 });
