@@ -11,7 +11,7 @@ export class AddressController {
 
       const response = await AddressService.create(req.user!, request);
 
-      res.status(200).json({
+      res.status(201).json({
         data: response,
       });
     } catch (err) {
