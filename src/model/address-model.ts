@@ -28,3 +28,8 @@ export function toAddressResponse(address: Address): AddressResponse {
     postal_code: address.postal_code,
   };
 }
+
+export type GetAddressRequest = {
+  contact_id: number;
+  id: number;
+};
