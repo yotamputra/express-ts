@@ -195,4 +195,18 @@ describe("GET /api/contacts", () => {
     expect(res.body.paging.total_page).toBe(1);
     expect(res.body.paging.size).toBe(10);
   });
+
+  it("should able to search contacts using name", async () => {
+    const res = await supertest(app)
+      .get(`/api/contacts`)
+      .query({ name: "es" })
+      .set("X-API-TOKEN", "test");
+
+    logger.debug(res.body);
+    expect(res.status).toBe(200);
+    expect(res.body.data.length).toBe(1);
+    expect(res.body.paging.current_page).toBe(1);
+    expect(res.body.paging.total_page).toBe(1);
+    expect(res.body.paging.size).toBe(10);
+  });
 });
