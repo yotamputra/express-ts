@@ -38,4 +38,23 @@ describe("POST /api/contacts/:contactId/addresses", () => {
     expect(res.body.data.country).toBe("test");
     expect(res.body.data.postal_code).toBe("12345");
   });
+
+  it("should reject create address if request is invalid", async () => {
+    const contact = await ContactTest.get();
+
+    const res = await supertest(app)
+      .post(`/api/contacts/${contact.id}/addresses`)
+      .set("X-API-TOKEN", "test")
+      .send({
+        street: "test",
+        city: "test",
+        province: "test",
+        country: "",
+        postal_code: "",
+      });
+
+    logger.debug(res.body);
+    expect(res.status).toBe(400);
+    expect(res.body.errors).toBeDefined();
+  });
 });
