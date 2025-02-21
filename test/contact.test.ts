@@ -119,4 +119,21 @@ describe("PUT /api/contacts/:contactId", () => {
     expect(res.body.data.email).toBe("test123@mail.com");
     expect(res.body.data.phone).toBe("111111111");
   });
+
+  it("should reject update a contact if request is invalid", async () => {
+    const contact = await ContactTest.get();
+    const res = await supertest(app)
+      .put(`/api/contacts/${contact.id}`)
+      .set("X-API-TOKEN", "test")
+      .send({
+        first_name: "",
+        last_name: "",
+        email: "test",
+        phone: "",
+      });
+
+    logger.debug(res.body);
+    expect(res.status).toBe(400);
+    expect(res.body.errors).toBeDefined();
+  });
 });
