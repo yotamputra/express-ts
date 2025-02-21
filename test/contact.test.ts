@@ -171,3 +171,28 @@ describe("DELETE /api/contacts/:contactId", () => {
     expect(res.body.errors).toBeDefined();
   });
 });
+
+describe("GET /api/contacts", () => {
+  beforeEach(async () => {
+    await UserTest.create();
+    await ContactTest.create();
+  });
+
+  afterEach(async () => {
+    await ContactTest.deleteAll();
+    await UserTest.delete();
+  });
+
+  it("should able to search contacts", async () => {
+    const res = await supertest(app)
+      .get(`/api/contacts`)
+      .set("X-API-TOKEN", "test");
+
+    logger.debug(res.body);
+    expect(res.status).toBe(200);
+    expect(res.body.data.length).toBe(1);
+    expect(res.body.paging.current_page).toBe(1);
+    expect(res.body.paging.total_page).toBe(1);
+    expect(res.body.paging.size).toBe(10);
+  });
+});
